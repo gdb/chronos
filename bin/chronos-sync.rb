@@ -333,11 +333,18 @@ jobs_to_be_updated.each do |j|
     method = 'dependency'
   end
   uri = URI("#{options.uri}/scheduler/#{method}")
-  req = Net::HTTP::Put.new(uri.request_uri)
+
+  # POST if we're newly creating the job; PUT otherwise.
+  if job[:old]
+    req = Net::HTTP::Put.new(uri.request_uri)
+  else
+    req = Net::HTTP::Post.new(uri.request_uri)
+  end
+
   req.body = JSON.generate(job)
   req.content_type = 'application/json'
 
-  puts "Sending PUT for `#{job['name']}` to #{uri.request_uri}"
+  puts "Sending #{req.method} for `#{job['name']}` to #{uri}"
 
   begin
     res = Net::HTTP.start(uri.hostname, port: uri.port, use_ssl: (uri.port == 443)) do |http|
