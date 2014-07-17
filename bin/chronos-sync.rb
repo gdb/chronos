@@ -347,7 +347,7 @@ jobs_to_be_updated.each do |j|
   puts "Sending #{req.method} for `#{job['name']}` to #{uri}"
 
   begin
-    res = Net::HTTP.start(uri.hostname, port: uri.port, use_ssl: (uri.port == 443)) do |http|
+    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: (uri.port == 443)) do |http|
       http.request(req)
     end
 
